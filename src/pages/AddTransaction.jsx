@@ -1,7 +1,18 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { FinanceContext } from "../context/FinanceContext";
 import { useNavigate, useLocation } from "react-router-dom";
+
+// ✅ define schema FIRST
+const schema = yup.object({
+  title: yup.string().required("Title required"),
+  amount: yup.number().typeError("Must be a number").positive().required(),
+  category: yup.string().required(),
+  type: yup.string().required(),
+  date: yup.string().required()
+});
 
 const AddTransaction = () => {
   const { addTransaction, updateTransaction } = useContext(FinanceContext);
@@ -10,7 +21,13 @@ const AddTransaction = () => {
 
   const editData = location.state;
 
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(schema),
     defaultValues: editData || {}
   });
 
@@ -37,14 +54,17 @@ const AddTransaction = () => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <input placeholder="Title" {...register("title")} />
+        {errors.title && <p>{errors.title.message}</p>}
 
         <input
           type="number"
           placeholder="Amount"
           {...register("amount")}
         />
+        {errors.amount && <p>{errors.amount.message}</p>}
 
         <select {...register("category")}>
+          <option value="">Select Category</option>
           <option value="Food">Food</option>
           <option value="Travel">Travel</option>
           <option value="Rent">Rent</option>
@@ -56,11 +76,13 @@ const AddTransaction = () => {
         </select>
 
         <select {...register("type")}>
+          <option value="">Select Type</option>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
 
         <input type="date" {...register("date")} />
+        {errors.date && <p>{errors.date.message}</p>}
 
         <textarea placeholder="Notes" {...register("notes")} />
 

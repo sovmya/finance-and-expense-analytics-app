@@ -5,11 +5,16 @@ const TransactionCard = ({ tx }) => {
   const { deleteTransaction } = useContext(FinanceContext);
 
   return (
-    <div style={{
-      border: "1px solid gray",
-      padding: "10px",
-      margin: "10px 0"
-    }}>
+    <div
+      style={{
+        border: "1px solid gray",
+        padding: "10px",
+        margin: "10px 0",
+        borderLeft: `5px solid ${
+          tx.type === "income" ? "green" : "red"
+        }`
+      }}
+    >
       <h3>{tx.title}</h3>
 
       <p>₹{tx.amount}</p>
