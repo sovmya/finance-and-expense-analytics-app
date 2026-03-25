@@ -55,17 +55,16 @@ const Transactions = () => {
         <p>No transactions found</p>
       ) : (
         filteredTransactions.map((tx) => (
-          <div key={tx.id}>
-            <TransactionCard tx={tx} />
+          <div key={tx.id} className="tx-wrapper">
+  <TransactionCard tx={tx} />
 
-            <button
-              onClick={() =>
-                navigate("/transactions/new", { state: tx })
-              }
-            >
-              Edit
-            </button>
-          </div>
+  <button
+    className="tx-edit-btn"
+    onClick={() => navigate("/transactions/new", { state: tx })}
+  >
+    Edit
+  </button>
+</div>
         ))
       )}
     </div>
