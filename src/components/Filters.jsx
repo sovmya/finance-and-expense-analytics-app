@@ -55,6 +55,19 @@ const Filters = ({
         <option value="amount">Amount (High → Low)</option>
         <option value="category">Category (A-Z)</option>
       </select>
+
+      {/* 🔥 CLEAR BUTTON */}
+      <button
+        onClick={() => {
+          setCategory("");
+          setType("");
+          setStartDate("");
+          setEndDate("");
+          setSortBy("");
+        }}
+      >
+        Clear
+      </button>
     </div>
   );
 };
