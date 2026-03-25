@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { FinanceContext } from "../context/FinanceContext";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { getExchangeRates } from "../services/api";
 import { useBudget } from "../hooks/useBudget";
 import { formatCurrency } from "../utils/currencyFormatter";
@@ -23,32 +23,32 @@ const Dashboard = () => {
         ];
 
   const [rates, setRates] = useState(null);
+  const [ratesError, setRatesError] = useState(false);
 
   useEffect(() => {
     const fetchRates = async () => {
       try {
         const data = await getExchangeRates();
+        // API returns rates FROM INR, so rates.USD means ₹1 = x USD
         setRates(data.rates);
       } catch (err) {
-        console.log(err);
+        console.error("Failed to fetch exchange rates:", err);
+        setRatesError(true);
       }
     };
-
     fetchRates();
   }, []);
 
-  // Top category
+  // Top spending category
   const categoryMap = {};
   transactions
     .filter((t) => t.type === "expense")
     .forEach((t) => {
-      categoryMap[t.category] =
-        (categoryMap[t.category] || 0) + t.amount;
+      categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
     });
 
   let topCategory = "N/A";
   let maxAmount = 0;
-
   for (let cat in categoryMap) {
     if (categoryMap[cat] > maxAmount) {
       maxAmount = categoryMap[cat];
@@ -68,10 +68,11 @@ const Dashboard = () => {
       <h2>Dashboard</h2>
 
       {transactions.length === 0 && (
-        <p>No transactions yet. Add some to see insights.</p>
+        <p style={{ color: "var(--text-muted)", marginBottom: "20px" }}>
+          No transactions yet. Add some to see insights.
+        </p>
       )}
 
-      {/* 🔥 NEW LAYOUT */}
       <div className="dashboard">
 
         {/* TOP ROW */}
@@ -80,17 +81,14 @@ const Dashboard = () => {
             <h3>Income</h3>
             <p>{formatCurrency(income)}</p>
           </div>
-
           <div className="card expense">
             <h3>Expense</h3>
             <p>{formatCurrency(totalExpense)}</p>
           </div>
-
           <div className="card budget">
             <h3>Budget</h3>
             <p>{formatCurrency(budget)}</p>
           </div>
-
           <div className="card balance">
             <h3>Balance</h3>
             <p>{formatCurrency(remaining)}</p>
@@ -109,9 +107,7 @@ const Dashboard = () => {
 
             <div className="card budget-status">
               <h3>Status</h3>
-              <p>
-                {isOverBudget ? "⚠️ Over Budget" : "✅ Within Budget"}
-              </p>
+              <p>{isOverBudget ? "⚠️ Over Budget" : "✅ Within Budget"}</p>
             </div>
 
             <div className="card budget-used">
@@ -120,15 +116,19 @@ const Dashboard = () => {
             </div>
 
             <div className="card currency">
-              <h3>Rates</h3>
-
-              {!rates ? (
-                <p>Loading...</p>
+              <h3>Exchange Rates</h3>
+              {ratesError ? (
+                <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>
+                  Could not load rates.
+                </p>
+              ) : !rates ? (
+                <p style={{ color: "var(--text-muted)" }}>Loading...</p>
               ) : (
-                <div>
-                  <p>₹1 = ${rates.USD}</p>
-                  <p>₹1 = €{rates.EUR}</p>
-                  <p>₹1 = £{rates.GBP}</p>
+                <div style={{ fontSize: "13px", lineHeight: "1.8" }}>
+                  {/* rates are FROM INR — ₹1 = x foreign */}
+                  <p>₹1 = ${rates.USD?.toFixed(4)} USD</p>
+                  <p>₹1 = €{rates.EUR?.toFixed(4)} EUR</p>
+                  <p>₹1 = £{rates.GBP?.toFixed(4)} GBP</p>
                 </div>
               )}
             </div>
@@ -137,13 +137,15 @@ const Dashboard = () => {
           {/* RIGHT BIG CHART */}
           <div className="card overview">
             <h3>Overview</h3>
-            <PieChart width={300} height={300}>
-              <Pie data={data} dataKey="value" outerRadius={90}>
-                <Cell fill="#4caf50" />
-                <Cell fill="#f44336" />
-              </Pie>
-              <Tooltip />
-            </PieChart>
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie data={data} dataKey="value" outerRadius={100}>
+                  <Cell fill="#4caf50" />
+                  <Cell fill="#f44336" />
+                </Pie>
+                <Tooltip formatter={(value) => formatCurrency(value)} />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
         </div>

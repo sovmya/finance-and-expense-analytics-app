@@ -5,7 +5,6 @@ import * as yup from "yup";
 import { FinanceContext } from "../context/FinanceContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// ✅ define schema FIRST
 const schema = yup.object({
   title: yup.string().required("Title required"),
   amount: yup.number().typeError("Must be a number").positive().required(),
@@ -54,14 +53,14 @@ const AddTransaction = () => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <input placeholder="Title" {...register("title")} />
-        {errors.title && <p>{errors.title.message}</p>}
+        {errors.title && <p style={{ color: "var(--expense)", margin: 0 }}>{errors.title.message}</p>}
 
         <input
           type="number"
           placeholder="Amount"
           {...register("amount")}
         />
-        {errors.amount && <p>{errors.amount.message}</p>}
+        {errors.amount && <p style={{ color: "var(--expense)", margin: 0 }}>{errors.amount.message}</p>}
 
         <select {...register("category")}>
           <option value="">Select Category</option>
@@ -82,12 +81,16 @@ const AddTransaction = () => {
         </select>
 
         <input type="date" {...register("date")} />
-        {errors.date && <p>{errors.date.message}</p>}
+        {errors.date && <p style={{ color: "var(--expense)", margin: 0 }}>{errors.date.message}</p>}
 
         <textarea placeholder="Notes" {...register("notes")} />
 
-        <label>
-          <input type="checkbox" {...register("recurring")} />
+        <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            {...register("recurring")}
+            style={{ width: "auto", cursor: "pointer" }}
+          />
           Recurring
         </label>
 

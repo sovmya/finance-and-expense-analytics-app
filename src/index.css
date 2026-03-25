@@ -9,7 +9,7 @@
   --text-main: #e5e7eb;
   --text-muted: #9ca3af;
 
-  --accent: #d4af37; /* GOLD */
+  --accent: #d4af37;
   --accent-soft: rgba(212, 175, 55, 0.2);
 
   --income: #22c55e;
@@ -47,71 +47,46 @@ body {
   border-radius: var(--radius);
 }
 
-/* nav buttons */
-/* .nav a {
-  text-decoration: none;
-  color: var(--text-main);
-  padding: 10px 18px;
-  border-radius: 999px;
-  transition: var(--transition);
-  position: relative;
-} */
-
 .nav a {
   text-decoration: none;
   color: var(--text-main);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 10px 18px;
   min-width: 100px;
   height: 42px;
-
   border-radius: 999px;
   transition: var(--transition);
 }
 
+/* The "+" add button — defined once */
 .nav a[href="/transactions/new"] {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 44px;
   height: 44px;
-
+  min-width: unset;
   font-size: 22px;
   font-weight: bold;
-
   background: var(--accent);
   color: black;
   border-radius: 50%;
 }
 
-/* glow hover */
+/* glow hover for all nav links */
 .nav a:hover {
   background: var(--accent-soft);
   box-shadow: 0 0 15px var(--accent);
   color: var(--accent);
 }
 
-/* center + button */
-.nav a[href="/transactions/new"] {
-  font-size: 20px;
-  font-weight: bold;
-  background: var(--accent);
-  color: black;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* override hover for add button */
 .nav a[href="/transactions/new"]:hover {
+  background: var(--accent);
   box-shadow: 0 0 20px var(--accent);
+  color: black;
 }
 
 /* =========================
@@ -123,103 +98,54 @@ body {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   transition: var(--transition);
+  margin-bottom: 16px;
 }
 
-/* glow on hover */
 .card:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 0 20px var(--accent-soft);
 }
 
 /* =========================
-   📊 DASHBOARD LAYOUT (NEW)
+   📊 DASHBOARD LAYOUT
 ========================= */
-
 .dashboard {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* ===== TOP ROW ===== */
 .top-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
-/* ===== BOTTOM SECTION ===== */
 .bottom-section {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 20px;
 }
 
-/* LEFT STACK */
 .left-cards {
   display: grid;
   grid-template-rows: repeat(4, 1fr);
   gap: 20px;
 }
 
-/* RIGHT BIG CHART */
 .overview {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-/* make chart responsive */
-.overview svg {
-  width: 100%;
-  height: 100%;
-  max-height: 350px;
 }
 
 /* =========================
-   ✨ OPTIONAL POLISH
+   🎯 CARD ACCENT BORDERS
 ========================= */
-
-.left-cards .card {
-  min-height: 80px;
-}
-
-.top-row .card {
-  min-height: 100px;
-}
-
-/* =========================
-   🎯 CARD COLORS
-========================= */
-
-.income { border-left: 4px solid var(--income); }
+.income  { border-left: 4px solid var(--income); }
 .expense { border-left: 4px solid var(--expense); }
-.budget { border-left: 4px solid var(--accent); }
+.budget  { border-left: 4px solid var(--accent); }
 .balance { border-left: 4px solid #3b82f6; }
-
-/* =========================
-   🎯 SPECIAL CARD COLORS
-========================= */
-
-/* income */
-.card:nth-child(1) {
-  border-left: 4px solid var(--income);
-}
-
-/* expense */
-.card:nth-child(2) {
-  border-left: 4px solid var(--expense);
-}
-
-/* budget */
-.card:nth-child(3) {
-  border-left: 4px solid var(--accent);
-}
-
-/* balance */
-.card:nth-child(4) {
-  border-left: 4px solid #3b82f6;
-}
 
 /* =========================
    ✨ BUTTONS
@@ -256,32 +182,13 @@ textarea {
   border: 1px solid var(--border);
   background: #111318;
   color: var(--text-main);
-}
-
-/* =========================
-   📱 RESPONSIVE
-========================= */
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 500px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .nav {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* =========================
    💸 TRANSACTIONS UI
 ========================= */
-
 .tx-wrapper {
   display: flex;
   flex-direction: column;
@@ -293,12 +200,10 @@ textarea {
   display: grid;
   grid-template-columns: 1.2fr 2fr 1fr;
   gap: 20px;
-
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-
   align-items: center;
   transition: var(--transition);
 }
@@ -308,7 +213,6 @@ textarea {
   box-shadow: 0 0 15px var(--accent-soft);
 }
 
-/* LEFT */
 .tx-left h3 {
   margin: 0;
 }
@@ -318,7 +222,6 @@ textarea {
   color: var(--text-muted);
 }
 
-/* badge */
 .tx-badge {
   font-size: 10px;
   background: var(--accent-soft);
@@ -327,7 +230,6 @@ textarea {
   border-radius: 6px;
 }
 
-/* CENTER */
 .tx-middle {
   display: flex;
   flex-direction: column;
@@ -340,7 +242,6 @@ textarea {
   font-size: 12px;
 }
 
-/* RIGHT */
 .tx-right {
   display: flex;
   flex-direction: column;
@@ -348,21 +249,14 @@ textarea {
   gap: 8px;
 }
 
-/* amount colors */
 .tx-amount {
   font-weight: bold;
   font-size: 16px;
 }
 
-.tx-amount.income {
-  color: var(--income);
-}
+.tx-amount.income  { color: var(--income); }
+.tx-amount.expense { color: var(--expense); }
 
-.tx-amount.expense {
-  color: var(--expense);
-}
-
-/* edit button */
 .tx-edit-btn {
   align-self: flex-end;
   background: transparent;
@@ -378,4 +272,50 @@ textarea {
 /* spacing between search and filters */
 .input {
   margin-bottom: 12px;
+}
+
+/* Recharts responsiveness fix */
+.recharts-responsive-container {
+  min-height: 250px;
+}
+
+/* =========================
+   📱 RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+  .top-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+  }
+
+  .left-cards {
+    grid-template-rows: unset;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .top-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .left-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .tx-card {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav a {
+    min-width: unset;
+  }
 }

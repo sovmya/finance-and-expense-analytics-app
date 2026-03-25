@@ -1,21 +1,28 @@
 import { createContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 
 export const FinanceContext = createContext();
 
 export const FinanceProvider = ({ children }) => {
-  // ✅ LOAD FROM LOCAL STORAGE
   const [transactions, setTransactions] = useState(() => {
-    const saved = localStorage.getItem("transactions");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem("transactions");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
   const [budget, setBudget] = useState(() => {
-    const saved = localStorage.getItem("budget");
-    return saved ? JSON.parse(saved) : 50000;
+    try {
+      const saved = localStorage.getItem("budget");
+      return saved ? JSON.parse(saved) : 50000;
+    } catch {
+      return 50000;
+    }
   });
 
-  // ✅ SAVE TO LOCAL STORAGE
   useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(transactions));
   }, [transactions]);
@@ -25,24 +32,25 @@ export const FinanceProvider = ({ children }) => {
   }, [budget]);
 
   const addTransaction = (data) => {
-    setTransactions((prev) => [
-      ...prev,
-      { ...data, id: uuidv4() }
-    ]);
+    setTransactions((prev) => [...prev, { ...data, id: uuidv4() }]);
+    toast.success("Transaction added!");
   };
 
   const deleteTransaction = (id) => {
-    setTransactions((prev) =>
-      prev.filter((tx) => tx.id !== id)
-    );
+    setTransactions((prev) => prev.filter((tx) => tx.id !== id));
+    toast.info("Transaction deleted.");
   };
 
   const updateTransaction = (updatedTx) => {
     setTransactions((prev) =>
-      prev.map((tx) =>
-        tx.id === updatedTx.id ? updatedTx : tx
-      )
+      prev.map((tx) => (tx.id === updatedTx.id ? updatedTx : tx))
     );
+    toast.success("Transaction updated!");
+  };
+
+  const updateBudget = (value) => {
+    setBudget(value);
+    toast.success("Budget updated!");
   };
 
   return (
@@ -53,7 +61,7 @@ export const FinanceProvider = ({ children }) => {
         deleteTransaction,
         updateTransaction,
         budget,
-        setBudget
+        setBudget: updateBudget
       }}
     >
       {children}
