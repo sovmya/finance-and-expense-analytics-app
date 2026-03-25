@@ -14,7 +14,6 @@ const Dashboard = () => {
 
   const { totalExpense, remaining } = useBudget(transactions, budget);
 
-  // ✅ SAFE CHART DATA (handles empty case)
   const data =
     income === 0 && totalExpense === 0
       ? [{ name: "No Data", value: 1 }]
@@ -38,9 +37,8 @@ const Dashboard = () => {
     fetchRates();
   }, []);
 
-  // 🧠 Top Spending Category (SAFE)
+  // Top category
   const categoryMap = {};
-
   transactions
     .filter((t) => t.type === "expense")
     .forEach((t) => {
@@ -58,10 +56,8 @@ const Dashboard = () => {
     }
   }
 
-  // 📊 Budget Status
   const isOverBudget = totalExpense > budget;
 
-  // 📈 Percentage Used (SAFE)
   const percentUsed =
     budget && totalExpense
       ? ((totalExpense / budget) * 100).toFixed(1)
@@ -71,74 +67,86 @@ const Dashboard = () => {
     <div>
       <h2>Dashboard</h2>
 
-      {/* 🟡 EMPTY STATE MESSAGE */}
       {transactions.length === 0 && (
         <p>No transactions yet. Add some to see insights.</p>
       )}
 
-      <div className="grid">
-        <div className="card">
-          <h3>Income</h3>
-          <p>{formatCurrency(income)}</p>
-        </div>
+      {/* 🔥 NEW LAYOUT */}
+      <div className="dashboard">
 
-        <div className="card">
-          <h3>Expense</h3>
-          <p>{formatCurrency(totalExpense)}</p>
-        </div>
-
-        <div className="card">
-          <h3>Budget</h3>
-          <p>{formatCurrency(budget)}</p>
-        </div>
-
-        <div className="card">
-          <h3>Balance</h3>
-          <p>{formatCurrency(remaining)}</p>
-        </div>
-
-        <div className="card">
-          <h3>Top Spending Category</h3>
-          <p>{topCategory}</p>
-        </div>
-
-        <div className="card">
-          <h3>Budget Status</h3>
-          <p>
-            {isOverBudget ? "⚠️ Over Budget" : "✅ Within Budget"}
-          </p>
-        </div>
-
-        <div className="card">
-          <h3>Budget Used</h3>
-          <p>{percentUsed}%</p>
-        </div>
-      </div>
-
-      <div className="card">
-        <h3>Currency Exchange (INR)</h3>
-
-        {!rates ? (
-          <p>Loading...</p>
-        ) : (
-          <div>
-            <p>₹1 = ${rates.USD} USD</p>
-            <p>₹1 = €{rates.EUR} EUR</p>
-            <p>₹1 = £{rates.GBP} GBP</p>
-            <p>₹1 = د.إ{rates.AED} AED</p>
+        {/* TOP ROW */}
+        <div className="top-row">
+          <div className="card income">
+            <h3>Income</h3>
+            <p>{formatCurrency(income)}</p>
           </div>
-        )}
-      </div>
 
-      <div className="card">
-        <h3>Overview</h3>
-        <PieChart width={300} height={300}>
-          <Pie data={data} dataKey="value" outerRadius={100}>
-            <Cell fill="#4caf50" />
-            <Cell fill="#f44336" />
-          </Pie>
-          <Tooltip />
-        </PieChart>
+          <div className="card expense">
+            <h3>Expense</h3>
+            <p>{formatCurrency(totalExpense)}</p>
+          </div>
+
+          <div className="card budget">
+            <h3>Budget</h3>
+            <p>{formatCurrency(budget)}</p>
+          </div>
+
+          <div className="card balance">
+            <h3>Balance</h3>
+            <p>{formatCurrency(remaining)}</p>
+          </div>
+        </div>
+
+        {/* BOTTOM */}
+        <div className="bottom-section">
+
+          {/* LEFT STACK */}
+          <div className="left-cards">
+            <div className="card top-category">
+              <h3>Top Category</h3>
+              <p>{topCategory}</p>
+            </div>
+
+            <div className="card budget-status">
+              <h3>Status</h3>
+              <p>
+                {isOverBudget ? "⚠️ Over Budget" : "✅ Within Budget"}
+              </p>
+            </div>
+
+            <div className="card budget-used">
+              <h3>Used</h3>
+              <p>{percentUsed}%</p>
+            </div>
+
+            <div className="card currency">
+              <h3>Rates</h3>
+
+              {!rates ? (
+                <p>Loading...</p>
+              ) : (
+                <div>
+                  <p>₹1 = ${rates.USD}</p>
+                  <p>₹1 = €{rates.EUR}</p>
+                  <p>₹1 = £{rates.GBP}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT BIG CHART */}
+          <div className="card overview">
+            <h3>Overview</h3>
+            <PieChart width={300} height={300}>
+              <Pie data={data} dataKey="value" outerRadius={90}>
+                <Cell fill="#4caf50" />
+                <Cell fill="#f44336" />
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </div>
+
+        </div>
       </div>
     </div>
   );
